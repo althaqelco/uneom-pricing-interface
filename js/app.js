@@ -55,16 +55,49 @@ function setupEventListeners() {
         previewQuote();
     });
     
-    // Export to PDF button
+    // Export to PDF button - usando once() para asegurar que solo se ejecute una vez
     document.getElementById('exportPdfBtn').addEventListener('click', function() {
         console.log('Export PDF button clicked');
+        
+        // Evitar múltiples clics
+        if (window.pdfGenerationInProgress) {
+            console.log('PDF generation already in progress, ignoring click');
+            return;
+        }
+        
+        // Deshabilitar temporalmente el botón
+        this.disabled = true;
+        
+        // Ejecutar exportación
         exportToPdf();
+        
+        // Reactivar el botón después de un tiempo
+        setTimeout(() => {
+            this.disabled = false;
+        }, 3000);
     });
     
-    // Modal export to PDF button
+    // Modal export to PDF button - usando once() para asegurar que solo se ejecute una vez
     document.getElementById('modalExportPdfBtn').addEventListener('click', function() {
         console.log('Modal export PDF button clicked');
+        
+        // Evitar múltiples clics
+        if (window.pdfGenerationInProgress) {
+            console.log('PDF generation already in progress, ignoring click');
+            return;
+        }
+        
+        // Desactivar el botón temporalmente para evitar múltiples clics
+        const exportBtn = document.getElementById('modalExportPdfBtn');
+        exportBtn.disabled = true;
+        
+        // Ejecutar la función de generación de PDF
         generatePdf();
+        
+        // Reactivar el botón después de un tiempo
+        setTimeout(function() {
+            exportBtn.disabled = false;
+        }, 3000);
     });
     
     // Save quote button
@@ -1193,6 +1226,18 @@ function generatePdf() {
     try {
         console.log('Starting PDF generation...');
         
+        // Crear un id único para esta generación de PDF para evitar duplicaciones
+        const pdfGenerationId = 'pdf_gen_' + new Date().getTime();
+        
+        // Verificar si ya hay una generación en curso
+        if (window.pdfGenerationInProgress) {
+            console.log('PDF generation already in progress, aborting');
+            return;
+        }
+        
+        // Marcar que hay una generación en curso
+        window.pdfGenerationInProgress = pdfGenerationId;
+        
         // Create a loading indicator
         const loadingIndicator = document.createElement('div');
         loadingIndicator.className = 'loading-indicator';
@@ -1215,6 +1260,7 @@ function generatePdf() {
             console.error('Preview element not found');
             alert('حدث خطأ: لم يتم العثور على عنصر المعاينة. يرجى المحاولة مرة أخرى.');
             document.body.removeChild(loadingIndicator);
+            window.pdfGenerationInProgress = null;
             return;
         }
         
@@ -1243,12 +1289,84 @@ function generatePdf() {
         previewModal.style.display = 'block';
         previewModal.style.opacity = '1';
         
-        // Create SVG logo and replace icons with unicode symbols
-        createSvgLogo(previewElement);
+        // Clean up any existing SVG logos to prevent duplication
+        const existingLogos = previewElement.querySelectorAll('svg');
+        existingLogos.forEach(logo => {
+            if (logo.id === 'uneom-logo-svg') {
+                logo.remove();
+            }
+        });
+        
+        // Find and replace the logo with inline SVG BEFORE html2canvas capture
+        const logoContainer = previewElement.querySelector('.quote-header .col-md-6 div');
+        if (logoContainer) {
+            // Limpiar completamente el contenedor para evitar duplicaciones
+            logoContainer.innerHTML = '';
+            
+            // Create the SVG directly in the container
+            const logoSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            logoSvg.setAttribute('width', '220');
+            logoSvg.setAttribute('height', '80');
+            logoSvg.setAttribute('viewBox', '0 0 220 80');
+            logoSvg.setAttribute('id', 'uneom-logo-svg');
+            logoSvg.style.maxWidth = '100%';
+            logoSvg.style.height = 'auto';
+            
+            // Add background rectangle
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', '0');
+            rect.setAttribute('y', '0');
+            rect.setAttribute('width', '220');
+            rect.setAttribute('height', '80');
+            rect.setAttribute('rx', '8');
+            rect.setAttribute('fill', 'white');
+            rect.setAttribute('stroke', '#e0e0e0');
+            rect.setAttribute('stroke-width', '1');
+            logoSvg.appendChild(rect);
+            
+            // Add UNEOM text
+            const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            text.setAttribute('x', '110');
+            text.setAttribute('y', '48');
+            text.setAttribute('text-anchor', 'middle');
+            text.setAttribute('font-family', 'Arial, Helvetica, sans-serif');
+            text.setAttribute('font-size', '32');
+            text.setAttribute('font-weight', 'bold');
+            text.setAttribute('fill', '#001A33');
+            text.textContent = 'UNEOM';
+            logoSvg.appendChild(text);
+            
+            // Add decorative line
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', '50');
+            line.setAttribute('y1', '55');
+            line.setAttribute('x2', '170');
+            line.setAttribute('y2', '55');
+            line.setAttribute('stroke', '#3498db');
+            line.setAttribute('stroke-width', '2');
+            logoSvg.appendChild(line);
+            
+            // Append the SVG to the container
+            logoContainer.appendChild(logoSvg);
+            
+            console.log('Logo SVG created and inserted');
+        } else {
+            console.warn('Logo container not found');
+        }
+        
+        // Replace icons with unicode symbols
         replaceIcons(previewElement);
         
         // Add a delay to ensure all DOM manipulations are complete
         setTimeout(() => {
+            // Verificar si este proceso sigue siendo el activo
+            if (window.pdfGenerationInProgress !== pdfGenerationId) {
+                console.log('Another PDF generation process has started, aborting this one');
+                restoreOriginalState(previewModal, previewElement, originalStyles);
+                document.body.removeChild(loadingIndicator);
+                return;
+            }
+            
             // Get client info for filename
             const clientName = document.getElementById('clientName')?.value || 'عميل_جديد';
             
@@ -1256,17 +1374,91 @@ function generatePdf() {
             const date = new Date();
             const formattedDate = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
             
+            console.log('Starting html2canvas capture...');
+            
             // Use html2canvas with optimized settings
             html2canvas(previewElement, {
                 scale: 2, // Higher resolution
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
-                logging: false,
+                logging: false, // Disable logging to prevent console spam
                 letterRendering: true,
-                imageTimeout: 0
+                imageTimeout: 0,
+                onclone: function(clonedDoc) {
+                    console.log('html2canvas clone callback triggered');
+                    
+                    // Clear any duplicate logos in the cloned document
+                    const clonedSvgs = clonedDoc.querySelectorAll('svg');
+                    clonedSvgs.forEach(svg => {
+                        if (svg.id === 'uneom-logo-svg') {
+                            svg.remove();
+                        }
+                    });
+                    
+                    // Ensure logo is visible in the cloned document too
+                    const clonedLogoContainer = clonedDoc.querySelector('.quote-header .col-md-6 div');
+                    if (clonedLogoContainer) {
+                        console.log('Creating SVG in cloned document');
+                        
+                        // Limpiar completamente el contenedor clonado
+                        clonedLogoContainer.innerHTML = '';
+                        
+                        // Create a simpler, more compatible SVG logo in the cloned document
+                        const logoSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        logoSvg.setAttribute('width', '220');
+                        logoSvg.setAttribute('height', '80');
+                        logoSvg.setAttribute('viewBox', '0 0 220 80');
+                        logoSvg.setAttribute('id', 'uneom-logo-svg-clone');
+                        
+                        // Add background rectangle
+                        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                        rect.setAttribute('x', '0');
+                        rect.setAttribute('y', '0');
+                        rect.setAttribute('width', '220');
+                        rect.setAttribute('height', '80');
+                        rect.setAttribute('rx', '8');
+                        rect.setAttribute('fill', 'white');
+                        logoSvg.appendChild(rect);
+                        
+                        // Add UNEOM text
+                        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                        text.setAttribute('x', '110');
+                        text.setAttribute('y', '48');
+                        text.setAttribute('text-anchor', 'middle');
+                        text.setAttribute('font-family', 'Arial, Helvetica, sans-serif');
+                        text.setAttribute('font-size', '32');
+                        text.setAttribute('font-weight', 'bold');
+                        text.setAttribute('fill', '#001A33');
+                        text.textContent = 'UNEOM';
+                        logoSvg.appendChild(text);
+                        
+                        // Add decorative line
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('x1', '50');
+                        line.setAttribute('y1', '55');
+                        line.setAttribute('x2', '170');
+                        line.setAttribute('y2', '55');
+                        line.setAttribute('stroke', '#3498db');
+                        line.setAttribute('stroke-width', '2');
+                        logoSvg.appendChild(line);
+                        
+                        // Append the SVG to the container
+                        clonedLogoContainer.appendChild(logoSvg);
+                    }
+                }
             }).then(canvas => {
                 try {
+                    console.log('Canvas generated successfully, creating PDF...');
+                    
+                    // Verificar si este proceso sigue siendo el activo
+                    if (window.pdfGenerationInProgress !== pdfGenerationId) {
+                        console.log('Another PDF generation process has started, aborting this one');
+                        restoreOriginalState(previewModal, previewElement, originalStyles);
+                        document.body.removeChild(loadingIndicator);
+                        return;
+                    }
+                    
                     // Create PDF using jsPDF
                     const { jsPDF } = window.jspdf;
                     
@@ -1307,13 +1499,11 @@ function generatePdf() {
                         const safeClientName = clientName.replace(/[\/\\:*?"<>|]/g, '_');
                         const filename = `عرض_سعر_${safeClientName}_${formattedDate}.pdf`;
                         pdf.save(filename);
+                        console.log('PDF saved successfully');
                     } catch (e) {
                         console.error('Error saving PDF:', e);
                         pdf.save('عرض_سعر.pdf');
                     }
-                    
-                    console.log('PDF generated successfully');
-                    
                 } catch (error) {
                     console.error('Error creating PDF from canvas:', error);
                     alert(`حدث خطأ أثناء إنشاء ملف PDF: ${error.message}`);
@@ -1321,15 +1511,17 @@ function generatePdf() {
                     // Always restore original styles and remove loading indicator
                     restoreOriginalState(previewModal, previewElement, originalStyles);
                     document.body.removeChild(loadingIndicator);
+                    // Resetear el flag de generación en curso
+                    window.pdfGenerationInProgress = null;
                 }
             }).catch(error => {
                 console.error('Error capturing preview with html2canvas:', error);
                 alert(`حدث خطأ أثناء التقاط المعاينة: ${error.message}`);
                 restoreOriginalState(previewModal, previewElement, originalStyles);
                 document.body.removeChild(loadingIndicator);
+                window.pdfGenerationInProgress = null;
             });
-        }, 300); // Small delay to ensure DOM is updated
-        
+        }, 500); // Increased delay to ensure DOM is fully updated
     } catch (error) {
         console.error('Unexpected error in PDF generation:', error);
         alert(`حدث خطأ غير متوقع أثناء إنشاء ملف PDF: ${error.message}`);
@@ -1343,57 +1535,9 @@ function generatePdf() {
         } catch (e) {
             console.error('Error removing loading indicator:', e);
         }
-    }
-}
-
-// Helper function to create SVG logo
-function createSvgLogo(previewElement) {
-    const logoImg = previewElement.querySelector('img.quote-company-logo');
-    if (logoImg) {
-        // Create SVG element
-        const svgLogo = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svgLogo.setAttribute('width', '220');
-        svgLogo.setAttribute('height', '80');
-        svgLogo.setAttribute('viewBox', '0 0 600 200');
-        svgLogo.setAttribute('class', 'quote-company-logo');
-        svgLogo.style.maxWidth = '220px';
-        svgLogo.style.display = 'block';
         
-        // Add white background for visibility
-        const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        bgRect.setAttribute('width', '600');
-        bgRect.setAttribute('height', '200');
-        bgRect.setAttribute('fill', 'white');
-        svgLogo.appendChild(bgRect);
-        
-        // Add "UNEOM" English text
-        const textEn = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        textEn.setAttribute('x', '300');
-        textEn.setAttribute('y', '80');
-        textEn.setAttribute('text-anchor', 'middle');
-        textEn.setAttribute('font-family', 'Arial, sans-serif');
-        textEn.setAttribute('font-size', '60');
-        textEn.setAttribute('font-weight', 'bold');
-        textEn.setAttribute('fill', '#001A33');
-        textEn.textContent = 'UNEOM';
-        svgLogo.appendChild(textEn);
-        
-        // Add Arabic "يونيوم" text
-        const textAr = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        textAr.setAttribute('x', '300');
-        textAr.setAttribute('y', '140');
-        textAr.setAttribute('text-anchor', 'middle');
-        textAr.setAttribute('font-family', 'Arial, sans-serif');
-        textAr.setAttribute('font-size', '40');
-        textAr.setAttribute('font-weight', 'bold');
-        textAr.setAttribute('fill', '#3498db');
-        textAr.textContent = 'يونيوم';
-        svgLogo.appendChild(textAr);
-        
-        // Replace the image with SVG
-        if (logoImg.parentNode) {
-            logoImg.parentNode.replaceChild(svgLogo, logoImg);
-        }
+        // Make sure to reset the flag
+        window.pdfGenerationInProgress = null;
     }
 }
 
