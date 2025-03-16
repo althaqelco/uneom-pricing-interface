@@ -1,0 +1,375 @@
+// Uneom Pricing Interface - Main JavaScript
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the application
+    initApp();
+    
+    // Check if we need to load a quote from session storage
+    const loadQuoteId = sessionStorage.getItem('loadQuoteId');
+    if (loadQuoteId && document.getElementById('quoteForm')) {
+        // Clear the session storage to prevent loading again on refresh
+        sessionStorage.removeItem('loadQuoteId');
+        // Load the quote
+        setTimeout(() => {
+            loadQuote(loadQuoteId);
+        }, 500);
+    }
+    
+    // Setup additional event listeners for the PDF export buttons
+    const modalExportPdfBtn = document.getElementById('modalExportPdfBtn');
+    if (modalExportPdfBtn) {
+        console.log('Modal Export PDF button found, adding event listener');
+        modalExportPdfBtn.addEventListener('click', function() {
+            console.log('Modal export PDF button clicked');
+            generatePdf();
+        });
+    } else {
+        console.warn('Modal Export PDF button not found!');
+    }
+    
+    const exportPdfBtn = document.getElementById('exportPdfBtn');
+    if (exportPdfBtn) {
+        console.log('Export PDF button found, adding event listener');
+        exportPdfBtn.addEventListener('click', function() {
+            console.log('Export PDF button clicked');
+            exportToPdf();
+        });
+    } else {
+        console.warn('Export PDF button not found!');
+    }
+});
+
+// Function to export the quote to PDF
+function exportToPdf() {
+    try {
+        console.log('Starting PDF export process...');
+        
+        // First make sure the preview is generated
+        if (!document.querySelector('.quote-preview')) {
+            console.log('No preview found, generating preview first...');
+            previewQuote();
+            // Give more time for the preview to render and images to load
+            setTimeout(() => {
+                generatePdf();
+            }, 1500);
+        } else {
+            console.log('Preview already exists, generating PDF directly...');
+            // Still add a small delay to ensure all images are loaded
+            setTimeout(() => {
+                generatePdf();
+            }, 800);
+        }
+    } catch (error) {
+        console.error('Error in PDF export:', error);
+        alert('حدث خطأ أثناء تصدير PDF. يرجى المحاولة مرة أخرى.');
+    }
+}
+
+// Function to generate the PDF
+function generatePdf() {
+    try {
+        console.log('Starting PDF generation...');
+        
+        // Create a loading indicator
+        const loadingIndicator = document.createElement('div');
+        loadingIndicator.className = 'loading-indicator';
+        loadingIndicator.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">جاري التحميل...</span></div><p class="mt-2">جاري إنشاء ملف PDF...</p>';
+        loadingIndicator.style.position = 'fixed';
+        loadingIndicator.style.top = '50%';
+        loadingIndicator.style.left = '50%';
+        loadingIndicator.style.transform = 'translate(-50%, -50%)';
+        loadingIndicator.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+        loadingIndicator.style.padding = '20px';
+        loadingIndicator.style.borderRadius = '10px';
+        loadingIndicator.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.2)';
+        loadingIndicator.style.zIndex = '9999';
+        loadingIndicator.style.textAlign = 'center';
+        document.body.appendChild(loadingIndicator);
+        
+        // Get the preview content element
+        const previewElement = document.querySelector('.quote-preview');
+        if (!previewElement) {
+            console.error('Preview element not found');
+            alert('حدث خطأ: لم يتم العثور على عنصر المعاينة. يرجى المحاولة مرة أخرى.');
+            document.body.removeChild(loadingIndicator);
+            return;
+        }
+        
+        // Get the modal element
+        const previewModal = document.getElementById('previewModal');
+        if (!previewModal) {
+            console.error('Preview modal not found');
+            alert('حدث خطأ: لم يتم العثور على نافذة المعاينة. يرجى المحاولة مرة أخرى.');
+            document.body.removeChild(loadingIndicator);
+            return;
+        }
+        
+        // Store original styles for restoration later
+        const originalStyles = {
+            width: previewElement.style.width,
+            maxWidth: previewElement.style.maxWidth,
+            backgroundColor: previewElement.style.backgroundColor,
+            padding: previewElement.style.padding,
+            borderRadius: previewElement.style.borderRadius,
+            boxShadow: previewElement.style.boxShadow,
+            overflow: previewElement.style.overflow
+        };
+        
+        // Set optimal styles for PDF capture
+        previewElement.style.width = '800px';
+        previewElement.style.maxWidth = '800px';
+        previewElement.style.backgroundColor = 'white';
+        previewElement.style.padding = '20px';
+        previewElement.style.borderRadius = '0';
+        previewElement.style.boxShadow = 'none';
+        previewElement.style.overflow = 'visible';
+        
+        // Make sure the preview modal is visible
+        previewModal.style.display = 'block';
+        previewModal.style.opacity = '1';
+        
+        // Create SVG logo directly in the DOM
+        try {
+            // Find the logo container
+            const logoContainer = previewElement.querySelector('img.quote-company-logo');
+            if (logoContainer && logoContainer.parentNode) {
+                // Create SVG element
+                const svgLogo = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svgLogo.setAttribute('width', '220');
+                svgLogo.setAttribute('height', '80');
+                svgLogo.setAttribute('viewBox', '0 0 600 200');
+                svgLogo.setAttribute('class', 'quote-company-logo');
+                svgLogo.style.maxWidth = '220px';
+                svgLogo.style.height = 'auto';
+                svgLogo.style.display = 'block';
+                
+                // Add white background for visibility
+                const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                bgRect.setAttribute('width', '600');
+                bgRect.setAttribute('height', '200');
+                bgRect.setAttribute('fill', 'white');
+                svgLogo.appendChild(bgRect);
+                
+                // Add "UNEOM" English text
+                const textEn = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textEn.setAttribute('x', '300');
+                textEn.setAttribute('y', '80');
+                textEn.setAttribute('text-anchor', 'middle');
+                textEn.setAttribute('font-family', 'Arial, sans-serif');
+                textEn.setAttribute('font-size', '60');
+                textEn.setAttribute('font-weight', 'bold');
+                textEn.setAttribute('fill', '#001A33');
+                textEn.textContent = 'UNEOM';
+                svgLogo.appendChild(textEn);
+                
+                // Add Arabic "يونيوم" text
+                const textAr = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                textAr.setAttribute('x', '300');
+                textAr.setAttribute('y', '140');
+                textAr.setAttribute('text-anchor', 'middle');
+                textAr.setAttribute('font-family', 'Arial, sans-serif');
+                textAr.setAttribute('font-size', '40');
+                textAr.setAttribute('font-weight', 'bold');
+                textAr.setAttribute('fill', '#3498db');
+                textAr.textContent = 'يونيوم';
+                svgLogo.appendChild(textAr);
+                
+                // Replace the image with the SVG
+                const parentDiv = logoContainer.parentNode;
+                parentDiv.innerHTML = '';
+                parentDiv.appendChild(svgLogo);
+                console.log('SVG logo created and inserted successfully');
+            } else {
+                console.warn('Logo container not found for SVG replacement');
+            }
+        } catch (error) {
+            console.error('Error creating SVG logo:', error);
+        }
+        
+        // Replace all Font Awesome icons with Unicode symbols
+        try {
+            const iconElements = previewElement.querySelectorAll('.fas, .fab, .fa');
+            const iconMappings = {
+                'fa-file-invoice': '📄',
+                'fa-calendar-alt': '📅',
+                'fa-hashtag': '#️⃣',
+                'fa-building': '🏢',
+                'fa-map-marker-alt': '📍',
+                'fa-phone': '📞',
+                'fa-envelope': '✉️',
+                'fa-globe': '🌐',
+                'fa-user': '👤',
+                'fa-id-card': '🪪',
+                'fa-shopping-cart': '🛒',
+                'fa-calculator': '🧮',
+                'fa-percentage': '%',
+                'fa-money-bill-wave': '💵',
+                'fa-gavel': '🔨',
+                'fa-facebook-f': 'f',
+                'fa-twitter': 't',
+                'fa-instagram': 'i',
+                'fa-trash': '🗑️',
+                'fa-edit': '✏️',
+                'fa-eye': '👁️'
+            };
+            
+            let replacedCount = 0;
+            iconElements.forEach(icon => {
+                // Get icon class
+                const iconClasses = Array.from(icon.classList);
+                const iconClass = iconClasses.find(cls => cls.startsWith('fa-'));
+                
+                if (iconClass && iconMappings[iconClass]) {
+                    const unicodeSymbol = iconMappings[iconClass];
+                    const replacement = document.createElement('span');
+                    replacement.textContent = unicodeSymbol;
+                    replacement.style.fontWeight = 'bold';
+                    replacement.style.display = 'inline-block';
+                    replacement.style.marginRight = '5px';
+                    
+                    if (icon.parentNode) {
+                        icon.parentNode.replaceChild(replacement, icon);
+                        replacedCount++;
+                    }
+                }
+            });
+            
+            console.log(`Replaced ${replacedCount} icons with Unicode symbols`);
+        } catch (error) {
+            console.error('Error replacing icons:', error);
+        }
+        
+        // Fix tables to prevent page breaks inside
+        const tables = previewElement.querySelectorAll('table');
+        tables.forEach(table => {
+            table.style.pageBreakInside = 'avoid';
+            table.style.width = '100%';
+        });
+        
+        // Add a longer delay to ensure all DOM manipulations are complete
+        setTimeout(() => {
+            // Use html2canvas with optimized settings
+            html2canvas(previewElement, {
+                scale: 2, // Higher resolution
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                letterRendering: true,
+                imageTimeout: 0
+            }).then(canvas => {
+                try {
+                    console.log('Canvas captured, creating PDF...');
+                    // Create PDF using jsPDF
+                    const { jsPDF } = window.jspdf;
+                    
+                    // Create A4 PDF with proper dimensions
+                    const pdf = new jsPDF({
+                        orientation: 'portrait',
+                        unit: 'mm',
+                        format: 'a4',
+                        compress: true,
+                        hotfixes: ['px_scaling']
+                    });
+                    
+                    // Calculate optimal dimensions for single page fitting
+                    const a4Width = 210; // A4 width in mm
+                    const a4Height = 297; // A4 height in mm
+                    const contentRatio = canvas.height / canvas.width;
+                    
+                    // Set maximum width with margins
+                    let imgWidth = 190; // 10mm margins on each side
+                    let imgHeight = imgWidth * contentRatio;
+                    
+                    // Scale down if content is too tall
+                    if (imgHeight > 277) { // 10mm margins top and bottom
+                        imgHeight = 277;
+                        imgWidth = imgHeight / contentRatio;
+                    }
+                    
+                    // Center the content on page
+                    const xPos = (a4Width - imgWidth) / 2;
+                    const yPos = 10; // 10mm margin from top
+                    
+                    console.log('Adding image to PDF...');
+                    
+                    // Add canvas as image
+                    pdf.addImage(
+                        canvas.toDataURL('image/png', 1.0), 
+                        'PNG', 
+                        xPos, 
+                        yPos, 
+                        imgWidth, 
+                        imgHeight, 
+                        '', 
+                        'FAST'
+                    );
+                    
+                    // Save the PDF
+                    try {
+                        // Clean filename - remove problematic characters
+                        const clientName = document.getElementById('clientName')?.value || 'عميل_جديد';
+                        const safeClientName = clientName.replace(/[\/\\:*?"<>|]/g, '_');
+                        const formattedDate = new Date().toISOString().split('T')[0];
+                        const filename = `عرض_سعر_${safeClientName}_${formattedDate}.pdf`;
+                        
+                        console.log('Saving PDF as:', filename);
+                        pdf.save(filename);
+                        alert('تم إنشاء ملف PDF بنجاح!');
+                    } catch (e) {
+                        console.error('Error saving PDF:', e);
+                        pdf.save('عرض_سعر.pdf');
+                        alert('تم إنشاء PDF ولكن مع اسم ملف افتراضي.');
+                    }
+                    
+                    console.log('PDF generated successfully');
+                    
+                } catch (error) {
+                    console.error('Error creating PDF from canvas:', error);
+                    alert(`حدث خطأ أثناء إنشاء ملف PDF: ${error.message}`);
+                } finally {
+                    // Restore original state
+                    previewModal.style.display = '';
+                    previewModal.style.opacity = '';
+                    previewElement.style.width = originalStyles.width;
+                    previewElement.style.maxWidth = originalStyles.maxWidth;
+                    previewElement.style.backgroundColor = originalStyles.backgroundColor;
+                    previewElement.style.padding = originalStyles.padding;
+                    previewElement.style.borderRadius = originalStyles.borderRadius;
+                    previewElement.style.boxShadow = originalStyles.boxShadow;
+                    previewElement.style.overflow = originalStyles.overflow;
+                    document.body.removeChild(loadingIndicator);
+                }
+            }).catch(error => {
+                console.error('Error capturing preview with html2canvas:', error);
+                alert(`حدث خطأ أثناء التقاط المعاينة: ${error.message}`);
+                
+                // Restore original state
+                previewModal.style.display = '';
+                previewModal.style.opacity = '';
+                previewElement.style.width = originalStyles.width;
+                previewElement.style.maxWidth = originalStyles.maxWidth;
+                previewElement.style.backgroundColor = originalStyles.backgroundColor;
+                previewElement.style.padding = originalStyles.padding;
+                previewElement.style.borderRadius = originalStyles.borderRadius;
+                previewElement.style.boxShadow = originalStyles.boxShadow;
+                previewElement.style.overflow = originalStyles.overflow;
+                document.body.removeChild(loadingIndicator);
+            });
+        }, 1000); // Longer delay to ensure DOM is updated
+        
+    } catch (error) {
+        console.error('Unexpected error in PDF generation:', error);
+        alert(`حدث خطأ غير متوقع أثناء إنشاء ملف PDF: ${error.message}`);
+        
+        // Try to remove loading indicator if it exists
+        try {
+            const indicator = document.querySelector('.loading-indicator');
+            if (indicator) {
+                document.body.removeChild(indicator);
+            }
+        } catch (e) {
+            console.error('Error removing loading indicator:', e);
+        }
+    }
+} 

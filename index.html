@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واجهة التسعير - يونيوم</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Bootstrap RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts - Cairo (Arabic) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Fix for Font Awesome icons */
+        .fa-file-invoice:before { content: "\f570"; }
+        .fa-history:before { content: "\f1da"; }
+        .fa-cog:before { content: "\f013"; }
+        .fa-redo:before { content: "\f01e"; }
+        .fa-save:before { content: "\f0c7"; }
+        .fa-eye:before { content: "\f06e"; }
+        .fa-file-pdf:before { content: "\f1c1"; }
+        .fa-plus:before { content: "\f067"; }
+        .fa-trash:before { content: "\f1f8"; }
+        .fa-sync-alt:before { content: "\f2f1"; }
+        .fa-envelope:before { content: "\f0e0"; }
+        .fa-phone:before { content: "\f095"; }
+        .fa-globe:before { content: "\f0ac"; }
+        .fa-exclamation-triangle:before { content: "\f071"; }
+
+        /* Logo styling optimization for PDF export */
+        .quote-company-logo {
+            max-width: 200px !important;
+            margin-bottom: 15px !important;
+            display: block !important;
+        }
+        
+        /* Ensure preview content is well styled for PDF */
+        #previewContent {
+            background-color: white !important;
+            padding: 20px !important;
+            border-radius: 8px !important;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1) !important;
+            max-width: 800px !important;
+            margin: 0 auto !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 sidebar">
+                <div class="logo-container text-center py-4">
+                    <img src="assets/logo.svg" alt="يونيوم" class="logo img-fluid">
+                </div>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="fas fa-file-invoice me-2"></i> عروض الأسعار
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="history.html">
+                            <i class="fas fa-history me-2"></i> السجل السابق
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="settings.html">
+                            <i class="fas fa-cog me-2"></i> الإعدادات
+                        </a>
+                    </li>
+                </ul>
+                <div class="company-info mt-auto p-3">
+                    <h6>يونيوم</h6>
+                    <p class="small mb-1">الرياض، المملكة العربية السعودية</p>
+                    <p class="small mb-1">+966 53 488 2396</p>
+                    <p class="small mb-0">info@uneom.com</p>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10 main-content">
+                <header class="d-flex justify-content-between align-items-center py-3 border-bottom">
+                    <h1 class="h4 mb-0">إنشاء عرض سعر جديد</h1>
+                    <div>
+                        <button id="resetFormBtn" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-redo me-1"></i> إعادة تعيين
+                        </button>
+                        <button id="saveQuoteBtn" class="btn btn-outline-primary me-2">
+                            <i class="fas fa-save me-1"></i> حفظ
+                        </button>
+                        <button id="previewQuoteBtn" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-eye me-1"></i> معاينة
+                        </button>
+                        <button id="exportPdfBtn" class="btn btn-primary">
+                            <i class="fas fa-file-pdf me-1"></i> تصدير PDF
+                        </button>
+                    </div>
+                </header>
+
+                <div class="content-area p-3">
+                    <form id="quoteForm">
+                        <!-- Client Information Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">بيانات العميل</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="quoteNumber" class="form-label">رقم عرض السعر</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="quoteNumber" readonly>
+                                            <button class="btn btn-outline-secondary" type="button" id="generateQuoteNumberBtn">
+                                                <i class="fas fa-sync-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="quoteDate" class="form-label">تاريخ عرض السعر</label>
+                                        <input type="date" class="form-control" id="quoteDate">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="clientName" class="form-label">اسم العميل / الشركة</label>
+                                        <input type="text" class="form-control" id="clientName" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="clientEmail" class="form-label">البريد الإلكتروني</label>
+                                        <input type="email" class="form-control" id="clientEmail" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="clientPhone" class="form-label">رقم الهاتف</label>
+                                        <input type="tel" class="form-control" id="clientPhone" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="clientAddress" class="form-label">عنوان الشركة</label>
+                                        <input type="text" class="form-control" id="clientAddress" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Products/Solutions Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">المنتجات / الحلول</h5>
+                                <button type="button" id="addProductBtn" class="btn btn-sm btn-success">
+                                    <i class="fas fa-plus me-1"></i> إضافة منتج
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="productsContainer">
+                                    <!-- Product items will be added here dynamically -->
+                                    <div class="product-item border rounded p-3 mb-3">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">اسم المنتج / الحل</label>
+                                                <input type="text" class="form-control product-name" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">الوصف</label>
+                                                <textarea class="form-control product-description" rows="1"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">سعر الوحدة (ريال)</label>
+                                                <input type="number" class="form-control product-price" min="0" step="0.01" required>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">الكمية</label>
+                                                <input type="number" class="form-control product-quantity" min="1" value="1" required>
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">الخصم (%)</label>
+                                                <input type="number" class="form-control product-discount" min="0" max="100" value="0">
+                                            </div>
+                                            <div class="col-md-3 mb-3">
+                                                <label class="form-label">الإجمالي (ريال)</label>
+                                                <input type="text" class="form-control product-total" readonly>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-product">
+                                            <i class="fas fa-trash me-1"></i> حذف
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-light">
+                                <div class="row justify-content-end">
+                                    <div class="col-md-4">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>المجموع:</span>
+                                            <span id="subtotal">0.00 ريال</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>ضريبة القيمة المضافة (15%):</span>
+                                            <span id="vat">0.00 ريال</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between fw-bold">
+                                            <span>الإجمالي النهائي:</span>
+                                            <span id="total">0.00 ريال</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">الشروط والأحكام</h5>
+                            </div>
+                            <div class="card-body">
+                                <textarea id="termsConditions" class="form-control" rows="4">
+1. يسري هذا العرض لمدة 30 يوماً من تاريخ إصداره.
+2. جميع الأسعار بالريال السعودي وتشمل ضريبة القيمة المضافة.
+3. يتم تحديد موعد التسليم بعد استلام أمر الشراء.
+4. يتطلب دفع 50% من قيمة الطلب كدفعة مقدمة.
+                                </textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preview Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">معاينة عرض السعر</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="previewContent" style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                        <!-- Preview content will be inserted here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary" id="modalExportPdfBtn" onclick="generatePdf()">
+                        <i class="fas fa-file-pdf me-1"></i> تصدير PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/app.js"></script>
+</body>
+</html>
