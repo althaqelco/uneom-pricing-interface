@@ -497,45 +497,60 @@ function previewQuote() {
                 </ul>
             </div>
             
-            <div class="quote-footer" style="margin-top: 40px; padding: 25px; border-radius: 15px; background: linear-gradient(135deg, #001A33 0%, #3498db 100%); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <!-- معلومات الشركة -->
+            <div class="company-info-section" style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-right: 5px solid #3498db;">
+                <h3 style="font-size: 20px; margin-bottom: 15px; color: #001A33; font-weight: bold;">معلومات الشركة</h3>
+                
                 <div class="row">
+                    <div class="col-12 mb-3">
+                        <h5 style="font-size: 16px; color: #001A33; font-weight: bold; margin-bottom: 8px;">شركة الظل الفضي للإنتاج الإعلامي المرئي والمسموع</h5>
+                        <p style="margin-bottom: 0; font-size: 14px;">حي العليا – شارع العليا – رقم المبنى: 8472 – الرقم الفرعي: 2901 – الرمز البريدي: 12213 – الرياض – المملكة العربية السعودية</p>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
                     <div class="col-md-6">
-                        <h4 style="font-size: 18px; margin-bottom: 15px; font-weight: bold;">تواصل معنا</h4>
-                <div class="quote-footer-contact">
-                            <p style="margin-bottom: 12px; text-align: center; direction: ltr; padding: 8px 15px; background-color: rgba(255,255,255,0.15); border-radius: 10px; margin: 0 auto 12px auto; max-width: 80%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 500;"><i class="fas fa-phone"></i> ${companyPhone}</p>
-                            <p style="margin-bottom: 12px; text-align: center; direction: ltr; padding: 8px 15px; background-color: rgba(255,255,255,0.15); border-radius: 10px; margin: 0 auto 12px auto; max-width: 80%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 500;"><i class="fas fa-envelope"></i> ${companyEmail}</p>
-                            <p style="margin-bottom: 0;"><i class="fas fa-globe"></i> ${companyWebsite}</p>
+                        <div style="background-color: rgba(0, 26, 51, 0.03); border-radius: 10px; padding: 15px; height: 100%;">
+                            <h5 style="font-size: 16px; color: #3498db; font-weight: bold; margin-bottom: 12px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px;">سجل تجاري</h5>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>الرقم الموحد:</strong> ٧٠٠٢٩٩٨٤٧٩</p>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>رقم المنشأة:</strong> ١٠١٠٢١٦٣٥٦</p>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>رقم التسجيل الضريبي:</strong> ٣١٢٥١١٩٩٩٤٠٠٠٠٣</p>
+                            <p style="margin-bottom: 0; font-size: 14px;"><strong>القيمة المضافة:</strong> ١٠٢٢٤٠٠٠٥٩٢٤٥١٣</p>
+                        </div>
                     </div>
+                    <div class="col-md-6 mt-3 mt-md-0">
+                        <div style="background-color: rgba(52, 152, 219, 0.03); border-radius: 10px; padding: 15px; height: 100%;">
+                            <h5 style="font-size: 16px; color: #3498db; font-weight: bold; margin-bottom: 12px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px;">بيانات التحويل البنكي</h5>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>اسم الشركة التجاري:</strong> شركة الظل الفضي للانتاج الاعلامي المرئي والمسموع</p>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>رقم الحساب:</strong> 369000010006080981111</p>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>رقم الآيبان:</strong> SA6980000369608010981111</p>
+                            <p style="margin-bottom: 0; font-size: 14px;"><strong>رقم الهوية الوطنية:</strong> 7002998479</p>
+                        </div>
                     </div>
-                    <div class="col-md-6 text-md-start">
-                        <h4 style="font-size: 18px; margin-bottom: 15px; font-weight: bold;">تابعنا</h4>
-                        <div class="social-icons" style="display: flex; justify-content: center; gap: 15px;">
-                            <a href="#" class="social-icon" style="display: inline-block; width: 40px; height: 40px; background-color: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
-                                <i class="fab fa-facebook-f" style="color: white; font-size: 18px;"></i>
-                            </a>
-                            <a href="#" class="social-icon" style="display: inline-block; width: 40px; height: 40px; background-color: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
-                                <i class="fab fa-twitter" style="color: white; font-size: 18px;"></i>
-                            </a>
-                            <a href="#" class="social-icon" style="display: inline-block; width: 40px; height: 40px; background-color: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
-                                <i class="fab fa-instagram" style="color: white; font-size: 18px;"></i>
-                    </a>
                 </div>
             </div>
-        </div>
+            
+            <div class="quote-footer" style="margin-top: 40px; padding: 25px; border-radius: 15px; background: linear-gradient(135deg, #001A33 0%, #3498db 100%); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 text-center">
+                        <div class="quote-footer-contact d-flex flex-column align-items-center">
+                            <div class="d-flex align-items-center mb-3" style="gap: 15px;">
+                                <p style="margin-bottom: 0; direction: ltr; padding: 8px 15px; background-color: rgba(255,255,255,0.15); border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 500;"><i class="fas fa-phone me-2"></i> ${companyPhone}</p>
+                                <p style="margin-bottom: 0; direction: ltr; padding: 8px 15px; background-color: rgba(255,255,255,0.15); border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 500;"><i class="fas fa-envelope me-2"></i> ${companyEmail}</p>
+                            </div>
+                            <p style="margin-bottom: 0; padding: 8px 15px; background-color: rgba(255,255,255,0.15); border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 500;"><i class="fas fa-globe me-2"></i> ${companyWebsite}</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="text-center mt-4">
                     <p style="margin-bottom: 0; opacity: 0.8; font-size: 14px;">© ${new Date().getFullYear()} ${companyName}. جميع الحقوق محفوظة.</p>
                 </div>
             </div>
         </div>`;
         
-        console.log('Preview HTML generated, displaying in modal...');
-        
-        // Display the preview in a modal
-        document.getElementById('previewContent').innerHTML = html;
-    const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
-    previewModal.show();
-        
-        console.log('Preview displayed successfully');
+        // Display the preview in the modal
+        const previewContent = document.getElementById('previewContent');
+        previewContent.innerHTML = html;
     } catch (error) {
         console.error('Error in preview generation:', error);
         alert('حدث خطأ أثناء إنشاء المعاينة. يرجى المحاولة مرة أخرى.');
@@ -1126,42 +1141,56 @@ function previewSavedQuote(quoteId) {
                 <div style="line-height: 1.8; font-size: 15px;">${quote.terms.replace(/\n/g, '<br>')}</div>
             </div>
             
-            <!-- Footer with contact information and social media links -->
-            <div class="quote-footer" style="margin-top: 40px; padding: 25px; border-radius: 15px; background: linear-gradient(135deg, #001A33 0%, #3498db 100%); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <!-- معلومات الشركة -->
+            <div class="company-info-section" style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-right: 5px solid #3498db;">
+                <h3 style="font-size: 20px; margin-bottom: 15px; color: #001A33; font-weight: bold;">معلومات الشركة</h3>
+                
                 <div class="row">
-                    <div class="col-md-8">
-                        <div class="quote-footer-contact" style="margin-bottom: 15px;">
-                            <h5 style="color: #FFD700; font-size: 20px; margin-bottom: 15px; font-weight: 600;">تواصل معنا</h5>
-                            <p style="margin-bottom: 10px; font-size: 15px;"><i class="fas fa-map-marker-alt me-2" style="color: #FFD700;"></i>${settings.company.address}</p>
-                            <p style="margin-bottom: 10px; font-size: 15px; text-align: center; direction: ltr; padding: 5px 10px; background-color: rgba(255,255,255,0.1); border-radius: 8px; margin: 0 auto 10px auto; max-width: 80%;"><i class="fas fa-phone me-2" style="color: #FFD700;"></i>${settings.company.phone}</p>
-                            <p style="margin-bottom: 10px; font-size: 15px; text-align: center; direction: ltr; padding: 5px 10px; background-color: rgba(255,255,255,0.1); border-radius: 8px; margin: 0 auto 10px auto; max-width: 80%;"><i class="fas fa-envelope me-2" style="color: #FFD700;"></i>${settings.company.email}</p>
-                            <p style="margin-bottom: 10px; font-size: 15px;"><i class="fas fa-globe me-2" style="color: #FFD700;"></i>${settings.company.website}</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <h5 style="color: #FFD700; font-size: 20px; margin-bottom: 15px; font-weight: 600;">تابعنا</h5>
-                        <div class="social-icons" style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
-                            <a href="${settings.social.facebook}" target="_blank" class="social-icon" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 8px; transition: all 0.3s ease; backdrop-filter: blur(5px);">
-                                <img src="${facebookIcon}" alt="Facebook" style="width: 100%; height: 100%; filter: brightness(0) invert(1);" />
-                            </a>
-                            <a href="${settings.social.twitter}" target="_blank" class="social-icon" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 8px; transition: all 0.3s ease; backdrop-filter: blur(5px);">
-                                <img src="${twitterIcon}" alt="Twitter" style="width: 100%; height: 100%; filter: brightness(0) invert(1);" />
-                            </a>
-                            <a href="${settings.social.instagram}" target="_blank" class="social-icon" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 8px; transition: all 0.3s ease; backdrop-filter: blur(5px);">
-                                <img src="${instagramIcon}" alt="Instagram" style="width: 100%; height: 100%; filter: brightness(0) invert(1);" />
-                            </a>
-                            <a href="${settings.social.youtube}" target="_blank" class="social-icon" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 8px; transition: all 0.3s ease; backdrop-filter: blur(5px);">
-                                <img src="${youtubeIcon}" alt="YouTube" style="width: 100%; height: 100%; filter: brightness(0) invert(1);" />
-                            </a>
-                        </div>
+                    <div class="col-12 mb-3">
+                        <h5 style="font-size: 16px; color: #001A33; font-weight: bold; margin-bottom: 8px;">شركة الظل الفضي للإنتاج الإعلامي المرئي والمسموع</h5>
+                        <p style="margin-bottom: 0; font-size: 14px;">حي العليا – شارع العليا – رقم المبنى: 8472 – الرقم الفرعي: 2901 – الرمز البريدي: 12213 – الرياض – المملكة العربية السعودية</p>
                     </div>
                 </div>
-                <div class="text-center mt-4" style="margin-top: 25px; font-size: 14px; color: rgba(255,255,255,0.8); border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px;">
-                    <p>© ${new Date().getFullYear()} ${settings.company.name}. جميع الحقوق محفوظة.</p>
+                
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div style="background-color: rgba(0, 26, 51, 0.03); border-radius: 10px; padding: 15px; height: 100%;">
+                            <h5 style="font-size: 16px; color: #3498db; font-weight: bold; margin-bottom: 12px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px;">سجل تجاري</h5>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>الرقم الموحد:</strong> ٧٠٠٢٩٩٨٤٧٩</p>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>رقم المنشأة:</strong> ١٠١٠٢١٦٣٥٦</p>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>رقم التسجيل الضريبي:</strong> ٣١٢٥١١٩٩٩٤٠٠٠٠٣</p>
+                            <p style="margin-bottom: 0; font-size: 14px;"><strong>القيمة المضافة:</strong> ١٠٢٢٤٠٠٠٥٩٢٤٥١٣</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-3 mt-md-0">
+                        <div style="background-color: rgba(52, 152, 219, 0.03); border-radius: 10px; padding: 15px; height: 100%;">
+                            <h5 style="font-size: 16px; color: #3498db; font-weight: bold; margin-bottom: 12px; border-bottom: 1px solid #e0e0e0; padding-bottom: 8px;">بيانات التحويل البنكي</h5>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>اسم الشركة التجاري:</strong> شركة الظل الفضي للانتاج الاعلامي المرئي والمسموع</p>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>رقم الحساب:</strong> 369000010006080981111</p>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>رقم الآيبان:</strong> SA6980000369608010981111</p>
+                            <p style="margin-bottom: 0; font-size: 14px;"><strong>رقم الهوية الوطنية:</strong> 7002998479</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    `;
+            
+            <div class="quote-footer" style="margin-top: 40px; padding: 25px; border-radius: 15px; background: linear-gradient(135deg, #001A33 0%, #3498db 100%); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 text-center">
+                        <div class="quote-footer-contact d-flex flex-column align-items-center">
+                            <div class="d-flex align-items-center mb-3" style="gap: 15px;">
+                                <p style="margin-bottom: 0; direction: ltr; padding: 8px 15px; background-color: rgba(255,255,255,0.15); border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 500;"><i class="fas fa-phone me-2"></i> ${companyPhone}</p>
+                                <p style="margin-bottom: 0; direction: ltr; padding: 8px 15px; background-color: rgba(255,255,255,0.15); border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 500;"><i class="fas fa-envelope me-2"></i> ${companyEmail}</p>
+                            </div>
+                            <p style="margin-bottom: 0; padding: 8px 15px; background-color: rgba(255,255,255,0.15); border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: 500;"><i class="fas fa-globe me-2"></i> ${companyWebsite}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <p style="margin-bottom: 0; opacity: 0.8; font-size: 14px;">© ${new Date().getFullYear()} ${companyName}. جميع الحقوق محفوظة.</p>
+                </div>
+            </div>
+        </div>`;
     
     // Display the preview in the modal
     document.getElementById('previewContent').innerHTML = previewHTML;
@@ -1492,6 +1521,8 @@ function generatePdf() {
                     
                     // Add canvas as image
                     pdf.addImage(canvas, 'PNG', xPos, yPos, imgWidth, imgHeight, '', 'FAST');
+                    
+                    // Company info is now included in the HTML template and captured in the canvas
                     
                     // Save the PDF
                     try {
